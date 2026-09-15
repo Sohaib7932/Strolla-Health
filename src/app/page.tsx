@@ -11,106 +11,107 @@ import {
 import { WaitlistForm } from "./waitlist-form";
 
 const useCases = [
-   { label: "Pushing a stroller", Icon: StrollerIcon },
-   { label: "Walking pad", Icon: WalkingPadIcon },
-   { label: "Carrying your little one", Icon: CarryingIcon },
-   { label: "Shopping cart", Icon: CartIcon },
-   { label: "Or simply no watch", Icon: NoWatchIcon },
+  { label: "Pushing a stroller", Icon: StrollerIcon },
+  { label: "Walking pad", Icon: WalkingPadIcon },
+  { label: "Carrying your little one", Icon: CarryingIcon },
+  { label: "Shopping cart", Icon: CartIcon },
+  { label: "Or simply no watch", Icon: NoWatchIcon },
 ];
 
-/* Washes the left of the photograph so the copy sits on a calm field, then
-   releases so the walker and the ankle callout stay untouched. The peach is
-   the supporting brand colour, used here only as a faint warmth. */
-const SCRIM = [
-  // Peach warmth first, so the washed area reads as cream rather than grey.
-  "radial-gradient(64% 60% at 4% 16%, rgba(217,182,160,0.3) 0%, rgba(217,182,160,0) 72%)",
-  // Stops are in PIXELS, not percentages: the copy column is a fixed width, so
-  // a percentage wash covers too little of it at 1280 and far too much at
-  // 1920. Pixel stops hold the text on a calm field at every width and free
-  // the same amount of photograph on the right.
-  "linear-gradient(97deg, rgba(255,252,250,0.96) 0px, rgba(255,252,250,0.95) 480px, rgba(255,252,250,0.85) 640px, rgba(255,252,250,0.42) 820px, rgba(255,252,250,0.1) 980px, rgba(255,252,250,0) 1100px)",
-].join(",");
-
-/* Every vertical step is capped against viewport height as well as width, so
-   the page lands inside one screen from a 720px laptop to a 1440px monitor. */
+/* Sizes come from the fluid scale in globals.css, which redefines the whole
+   set once per layout mode. Nothing here is tuned per breakpoint. */
 const S = {
-  pad: "lg:py-[clamp(14px,2.6svh,38px)]",
-  logo: "text-[clamp(20px,2.6svh,26px)]",
-  h1: "mt-[clamp(6px,1.4svh,18px)] text-[clamp(1.65rem,min(4.6vw,5.4svh),3rem)]",
-  lead: "mt-[clamp(8px,1.6svh,20px)] text-[clamp(13px,1.75svh,16px)]",
-  body: "mt-[clamp(4px,0.9svh,12px)] text-[clamp(12.5px,1.62svh,15px)]",
-  cases: "mt-[clamp(9px,1.9svh,24px)]",
-  chip: "h-[clamp(38px,5svh,56px)] w-[clamp(38px,5svh,56px)]",
-  chipIcon: "h-[clamp(19px,2.5svh,28px)] w-[clamp(19px,2.5svh,28px)]",
-  card: "mt-[clamp(9px,1.9svh,24px)]",
+  logo: "text-[length:var(--fs-logo)]",
+  h1: "mt-[var(--gap-1)] text-[length:var(--fs-h1)]",
+  lead: "mt-[var(--gap-2)] text-[length:var(--fs-lead)]",
+  body: "mt-[var(--gap-1)] text-[length:var(--fs-body)]",
+  case: "text-[length:var(--fs-case)]",
+  chip: "h-[var(--chip)] w-[var(--chip)]",
+  chipIcon: "h-[calc(var(--chip)*0.52)] w-[calc(var(--chip)*0.52)]",
+  block: "mt-[var(--gap-3)]",
 };
 
 export default function Home() {
   return (
     <main className="relative min-h-svh overflow-hidden bg-canvas">
-      {/* One <Image> for both layouts: a leading banner on phones, the full
-          page behind the copy from lg up. next/image serves AVIF/WebP at the
-          size actually needed instead of the 2MB source. */}
-      <div className="relative h-[34svh] min-h-[200px] w-full lg:absolute lg:inset-0 lg:h-auto lg:min-h-0">
+      {/* One <Image> for both layouts: a banner above the copy while the page
+          is stacked, a full-height frame pinned to the right once it splits.
+          Both carry the frame's own 1456:1080, so object-cover has nothing to
+          crop and the whole photograph survives at every size: the walker is
+          head-to-foot in the frame, and any vertical crop takes her head. The
+          banner runs edge to edge and takes its height from that ratio, so
+          phones and portrait tablets get the whole frame with no crop and no
+          bars beside it. Only a wide, short window hits the 62svh ceiling, and
+          there the crop is pushed to the bottom (object-position 12%) so the
+          head and the ankle callout both survive. next/image serves AVIF/WebP
+          at the size actually needed, not the 2MB source. */}
+      <div className="relative aspect-[1456/1080] max-h-[62svh] w-full overflow-hidden desk:absolute desk:top-0 desk:right-0 desk:left-auto desk:aspect-auto desk:max-h-none desk:h-svh desk:w-[calc(100svh*1.3481)]">
         <Image
           src={heroImage}
           alt="A parent walking beside the water pushing a stroller, with the Strolla tracker worn on her ankle"
           fill
-          priority
+          preload
           placeholder="blur"
-          sizes="100vw"
-          className="object-cover object-[64%_58%] lg:object-[62%_66%]"
+          sizes="(min-width: 1240px) 75vw, 100vw"
+          className="photo-fade object-cover object-[50%_12%] desk:object-right"
         />
+        {/* Settles the banner's bottom edge into the page. Kept shallow so it
+            lands on pavement rather than on her shoes. */}
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-canvas to-transparent lg:hidden"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 hidden lg:block"
-          style={{ backgroundImage: SCRIM }}
+          className="absolute inset-x-0 bottom-0 h-[clamp(34px,11%,60px)] bg-gradient-to-t from-canvas to-transparent desk:hidden"
         />
       </div>
 
+      <div aria-hidden className="wash hidden desk:block" />
+
       <div
-        className={`relative z-10 flex flex-col justify-center px-5 pt-7 pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:px-10 lg:min-h-svh lg:pr-10 lg:pb-0 lg:pl-[clamp(32px,5vw,84px)] ${S.pad}`}
+        className={
+          "relative z-10 flex flex-col justify-center px-[var(--gutter)] pt-[clamp(20px,5vw,34px)] " +
+          "pb-[max(2.5rem,env(safe-area-inset-bottom))] " +
+          "desk:min-h-svh desk:py-[var(--page-pad-y)] desk:pr-[4vw] desk:pl-[var(--pad-left)]"
+        }
       >
-        <div className="w-full max-w-[600px] lg:max-w-[min(730px,56vw)]">
+        {/* Centred while stacked so a wide, short window doesn't strand the
+            copy against the left edge; hard left once the photo is behind. */}
+        <div className="mx-auto w-full max-w-[var(--copy)] desk:mx-0">
           <div className="rise flex items-center gap-2.5">
             <StrollaMark className="h-[1.05em] w-[0.85em] text-accent" />
-            <span className={`font-extrabold tracking-[-0.03em] text-ink ${S.logo}`}>
+            <span
+              className={`font-extrabold tracking-[-0.03em] text-ink ${S.logo}`}
+            >
               Strolla
             </span>
           </div>
 
           <h1
-            className={`rise max-w-[600px] text-balance font-extrabold leading-[1.06] tracking-[-0.035em] text-ink ${S.h1}`}
+            className={`rise text-balance font-extrabold leading-[1.06] tracking-[-0.035em] text-ink ${S.h1}`}
             style={{ animationDelay: "80ms" }}
           >
             Finally, a fitness tracker that doesn&rsquo;t rely on{" "}
             <span className="whitespace-nowrap text-accent">arm movement.</span>
           </h1>
 
+          {/* ch caps the measure for reading; the column caps it on a phone. */}
           <p
-            className={`rise max-w-[46ch] leading-[1.55] text-ink ${S.lead}`}
+            className={`rise max-w-[52ch] leading-[1.5] text-ink ${S.lead}`}
             style={{ animationDelay: "150ms" }}
           >
             Most fitness trackers rely on arm movement, so they miss steps when
             your hands aren&rsquo;t swinging.
           </p>
           <p
-            className={`rise max-w-[48ch] leading-[1.6] text-ink/85 ${S.body}`}
+            className={`rise max-w-[56ch] leading-[1.55] text-ink/85 ${S.body}`}
             style={{ animationDelay: "190ms" }}
           >
             <span className="font-bold text-ink">Strolla</span> is an ankle-worn
-            fitness tracker designed to count every step&mdash;whether
-            you&rsquo;re pushing a stroller, walking on a walking pad, carrying
-            your little one, pushing a shopping cart, or simply prefer not to
-            wear a watch.
+            fitness tracker designed to count every step, whether you&rsquo;re
+            pushing a stroller, walking on a walking pad, carrying your little
+            one, pushing a shopping cart, or simply prefer not to wear a watch.
           </p>
 
           <ul
-            className={`rise grid max-w-[540px] grid-cols-2 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-y-4 ${S.cases}`}
+            className={`rise grid grid-cols-2 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-y-4 ${S.block}`}
             style={{ animationDelay: "240ms" }}
           >
             {useCases.map(({ label, Icon }) => (
@@ -123,14 +124,22 @@ export default function Home() {
                 >
                   <Icon className={S.chipIcon} />
                 </span>
-                <span className="text-[11.5px] font-semibold leading-[1.25] text-ink sm:min-h-[26px] sm:text-[clamp(10.5px,1.35svh,11.5px)]">
+                <span
+                  className={`font-semibold leading-[1.25] text-ink sm:min-h-[2.5em] ${S.case}`}
+                >
                   {label}
                 </span>
               </li>
             ))}
           </ul>
 
-          <div className={`rise ${S.card}`} style={{ animationDelay: "320ms" }}>
+          {/* The card lays itself out from its OWN width, not the viewport's:
+              it is the one block whose column count has to follow the copy
+              column, which is fluid in both layouts. */}
+          <div
+            className={`rise @container ${S.block}`}
+            style={{ animationDelay: "320ms" }}
+          >
             <WaitlistForm />
           </div>
         </div>

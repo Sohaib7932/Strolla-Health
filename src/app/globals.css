@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Core UI colours — brand spec */
+  /* Core UI colours, brand spec */
   --color-canvas: #ffffff; /* main background */
   --color-card: #fffcfa; /* card background */
   --color-line: #f3e9e5; /* card border, light fill, incomplete ring */
@@ -21,14 +21,185 @@
   --font-sans: var(--font-manrope);
 }
 
+/* The page has exactly two layouts, and this is the only rule that picks one.
+   The split hero (photograph behind a left-hand copy column) has to land nine
+   blocks inside a single screen, so it needs real width AND real height: a
+   1280x560 window has the width but not the height and takes the stacked
+   layout instead of squeezing. Every difference between the two modes is
+   behind this variant or behind the scale below. */
+@custom-variant desk (@media (min-width: 1240px) and (min-height: 620px));
+
+/* ===========================================================================
+   Fluid scale
+
+   Every size on the page reads from these variables, so each layout owns one
+   coherent scale rather than a hand-tuned clamp() per element.
+
+   Stacked mode (phone through small laptop) scales on WIDTH only. The page is
+   free to scroll there, so a short window must never shrink the type.
+   =========================================================================== */
+:root {
+  --gutter: 20px;
+  --pad-left: var(--gutter);
+  --copy: 620px;
+
+  --fs-logo: clamp(21px, 5.6vw, 25px);
+  --fs-h1: clamp(27px, 7.4vw, 42px);
+  --fs-lead: clamp(15px, 4vw, 18px);
+  --fs-body: clamp(14px, 3.6vw, 16px);
+  --fs-case: clamp(12px, 3.2vw, 13.5px);
+  --fs-card-title: clamp(16px, 4.2vw, 18px);
+  --fs-benefit: clamp(13.5px, 3.4vw, 15px);
+  --fs-label: 12.5px;
+  --fs-note: 12px;
+  --fs-field: 16px; /* below 16px, iOS Safari zooms the page on focus */
+
+  --chip: clamp(40px, 11vw, 48px);
+
+  --gap-1: clamp(8px, 2.2vw, 12px); /* inside a block: heading to its text */
+  --gap-2: clamp(10px, 3vw, 16px); /* between paragraphs */
+  --gap-3: clamp(18px, 4.5vw, 26px); /* between sections */
+
+  --card-pad: clamp(16px, 4.4vw, 24px);
+  --field-h: 44px; /* tap-target floor */
+  --btn-h: 50px;
+  --page-pad-y: 0px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: clamp(32px, 5vw, 56px);
+  }
+}
+
+/* Split mode. Sizes follow one unit governed by whichever axis is tighter: on
+   a 1366x650 laptop that is the height, on a 1920x1200 monitor the width. The
+   page then shrinks as a whole and keeps its proportions, instead of one block
+   collapsing while the rest stays put. */
+@media (min-width: 1240px) and (min-height: 620px) {
+  :root {
+    --u: min(1.06vw, 1.95svh);
+
+    --gutter: clamp(30px, 4.2vw, 76px);
+    /* The copy column takes what the photograph leaves. The photo is
+       1.3481 x the viewport height wide, and its left 18% is fade, so the
+       canvas free of it is 100vw - 1.105 x the height. A tall window makes
+       the photo wide and the column narrow, a short one the reverse, and the
+       text lands beside the frame instead of on top of the walker at every
+       ratio. The floor keeps the waitlist card in two columns. */
+    --copy: clamp(560px, calc(100vw - (100svh * 1.105) - var(--gutter)), 660px);
+    /* Normally the gutter. On a window so wide and short that the photo is a
+       narrow strip on the right, it instead centres the copy in the canvas the
+       photo leaves, rather than stranding it a thousand pixels away. */
+    --pad-left: max(
+      var(--gutter),
+      calc((100vw - (100svh * 1.3481) - var(--copy)) / 2)
+    );
+    --page-pad-y: clamp(10px, calc(var(--u) * 1.1), 34px);
+
+    --fs-logo: clamp(19px, calc(var(--u) * 1.55), 26px);
+    --fs-h1: clamp(26px, calc(var(--u) * 2.85), 48px);
+    --fs-lead: clamp(13.5px, calc(var(--u) * 1.24), 17px);
+    --fs-body: clamp(12.5px, calc(var(--u) * 1.13), 15.5px);
+    --fs-case: clamp(10.5px, calc(var(--u) * 0.93), 13px);
+    --fs-card-title: clamp(14.5px, calc(var(--u) * 1.3), 17px);
+    --fs-benefit: clamp(12px, calc(var(--u) * 1.1), 13.5px);
+    --fs-label: clamp(11px, calc(var(--u) * 1), 12.5px);
+    /* The reassurance line under the button has to clear the button's width on
+       one line, and that column is the narrowest thing on the page. */
+    --fs-note: clamp(10.5px, calc(var(--u) * 0.9), 12px);
+    --fs-field: clamp(13.5px, calc(var(--u) * 1.2), 15px);
+
+    --chip: clamp(34px, calc(var(--u) * 3.3), 54px);
+
+    --gap-1: clamp(6px, calc(var(--u) * 0.62), 16px);
+    --gap-2: clamp(7px, calc(var(--u) * 0.74), 18px);
+    --gap-3: clamp(10px, calc(var(--u) * 1), 26px);
+
+    --card-pad: clamp(14px, calc(var(--u) * 1.4), 24px);
+    --field-h: clamp(38px, calc(var(--u) * 3.2), 46px);
+    --btn-h: clamp(42px, calc(var(--u) * 3.6), 50px);
+  }
+}
+
 body {
   background: var(--color-canvas);
   color: var(--color-ink);
 }
 
+/* The photograph is 1456x1080. A laptop viewport is nearer 2:1, so filling it
+   edge to edge has to throw away a third of the frame's height, and the walker
+   runs from the top of the frame to the bottom: her head goes first. So the
+   photo is sized from the viewport HEIGHT (width = height x the frame's own
+   ratio) and pinned right. It then fills top to bottom with nothing cropped,
+   whatever the window. On a window tall enough that this would be wider than
+   the viewport it simply bleeds off the left, which costs only water and sky.
+   The 1.3481 is 1456/1080 and 0.7418 its reciprocal; keep them in step with
+   the source file.
+
+   Softening its left edge into the page is the mask below. The fade is spent
+   inside the frame's empty left margin (water, sunset, no subject), so it
+   takes nothing off the stroller. Stacked, the photo is a plain banner and
+   wants no mask at all. */
+@media (min-width: 1240px) and (min-height: 620px) {
+  .photo-fade {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 8%,
+      #000 18%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 8%,
+      #000 18%
+    );
+  }
+}
+
+/* Washes whatever the copy sits on, so the text keeps its contrast where it
+   laps over the photograph (on a tall window the photo is full-bleed again and
+   this is the only thing holding the type up). The wash is a box sized to the
+   copy column plus a fade tail, and its stops are percentages OF THAT BOX, so
+   the text sits on the same field at 1240px as it does at 2560px. Fixed pixel
+   stops covered the whole photograph on a small laptop.
+
+   Two details keep its right-hand edge invisible:
+   - it runs square (to right), not on a tilt. A tilted gradient's last stop
+     only lands on the FAR corner, so at 97deg the top of the edge was still
+     ~0.3 opaque with nothing beyond it: a visible seam down the page. Square,
+     every point of the edge is 0.
+   - the fade runs to the same colour it started from, never to `transparent`,
+     which would interpolate through black and grey the photograph.
+   The peach is the supporting brand colour, here only as a faint warmth. */
+.wash {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: min(
+    94vw,
+    calc(var(--pad-left) + var(--copy) + clamp(120px, 13vw, 260px))
+  );
+  background-image:
+    radial-gradient(
+      58% 56% at 6% 14%,
+      rgba(217, 182, 160, 0.3) 0%,
+      rgba(217, 182, 160, 0) 70%
+    ),
+    linear-gradient(
+      to right,
+      rgba(255, 252, 250, 0.97) 0%,
+      rgba(255, 252, 250, 0.95) 55%,
+      rgba(255, 252, 250, 0.88) 72%,
+      rgba(255, 252, 250, 0.55) 84%,
+      rgba(255, 252, 250, 0.18) 93%,
+      rgba(255, 252, 250, 0) 100%
+    );
+}
+
 /* Tailwind v4's preflight follows the browser default (cursor: default) for
    buttons, unlike v3 which forced a pointer. Restore it so controls read as
-   clickable — scoped to enabled elements so a disabled button doesn't lie. */
+   clickable, scoped to enabled elements so a disabled button doesn't lie. */
 @layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled),

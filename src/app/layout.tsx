@@ -8,11 +8,11 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Strolla — the fitness tracker that doesn't rely on arm movement",
+  title: "Strolla | The fitness tracker that doesn't rely on arm movement",
   description:
-    "Strolla is an ankle-worn fitness tracker built to count every step — pushing a stroller, walking the walking pad, carrying your little one, or pushing a cart. Join the waitlist for early access.",
+    "Strolla is an ankle-worn fitness tracker built to count every step: pushing a stroller, walking the walking pad, carrying your little one, or pushing a cart. Join the waitlist for early access.",
   openGraph: {
-    title: "Strolla — every step counts, hands free",
+    title: "Strolla | Every step counts, hands free",
     description:
       "An ankle-worn fitness tracker that counts the steps your watch misses. Join the waitlist.",
     type: "website",
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       {/* Extensions (ColorZilla's cz-shortcut-listen, Grammarly's data-gr-*)
           write attributes onto <body> before React hydrates, which reads as a
-          mismatch. suppressHydrationWarning applies one level deep only - it
+          mismatch. suppressHydrationWarning applies one level deep only, it
           covers this element's own attributes and never hides a real mismatch
           inside the page. */}
       <body className="min-h-full font-sans" suppressHydrationWarning>
