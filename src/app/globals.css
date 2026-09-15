@@ -1,26 +1,59 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Core UI colours — brand spec */
+  --color-canvas: #ffffff; /* main background */
+  --color-card: #fffcfa; /* card background */
+  --color-line: #f3e9e5; /* card border, light fill, incomplete ring */
+
+  --color-ink: #4b342c; /* headings, body, key data */
+  --color-muted: #9c7063; /* secondary / less important text */
+
+  --color-accent: #c38381; /* primary accent, buttons, active icons */
+  --color-accent-600: #a9615f; /* darker accent for hover / focus states */
+
+  --color-peach: #d9b6a0; /* supporting brand colour, used selectively */
+
+  --radius-xl: 0.875rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-manrope);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* Tailwind v4's preflight follows the browser default (cursor: default) for
+   buttons, unlike v3 which forced a pointer. Restore it so controls read as
+   clickable — scoped to enabled elements so a disabled button doesn't lie. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  label[for] {
+    cursor: pointer;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
 }
