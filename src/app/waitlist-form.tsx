@@ -54,7 +54,7 @@ export function WaitlistForm() {
           enough, which keeps it short enough to clear the fold on a laptop.
           The query is on the card, not the viewport: the copy column is fluid,
           so the same viewport can give the card very different widths. */}
-      <div className="grid gap-4 @min-[480px]:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)] @min-[480px]:gap-6">
+      <div className="grid gap-4 @min-[440px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] @min-[440px]:gap-[var(--gap-3)]">
         <div>
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-line text-accent">
@@ -78,7 +78,7 @@ export function WaitlistForm() {
           </ul>
         </div>
 
-        <div className="border-t border-line pt-4 @min-[480px]:border-t-0 @min-[480px]:border-l @min-[480px]:pt-0 @min-[480px]:pl-6">
+        <div className="border-t border-line pt-4 @min-[440px]:border-t-0 @min-[440px]:border-l @min-[440px]:pt-0 @min-[440px]:pl-[var(--gap-3)]">
           <div className="grid gap-[var(--gap-1)] @min-[380px]:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]">
             <Field
               name="firstName"
