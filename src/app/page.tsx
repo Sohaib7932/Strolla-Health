@@ -56,7 +56,7 @@ export default function Home() {
           preload
           placeholder="blur"
           sizes="(min-width: 1240px) 75vw, 100vw"
-          className="photo-fade object-cover object-[50%_12%] desk:object-right"
+          className="object-cover object-[50%_12%] desk:object-right"
         />
         {/* Settles the banner's bottom edge into the page. Kept shallow so it
             lands on pavement rather than on her shoes. */}
