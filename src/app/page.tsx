@@ -1,5 +1,5 @@
 import Image from "next/image";
-import heroImage from "../../public/strolla-bg.png";
+import heroImage from "./strolla-bg.jpg";
 import {
   CarryingIcon,
   CartIcon,
@@ -44,7 +44,10 @@ export default function Home() {
           bars beside it. Only a wide, short window hits the 62svh ceiling, and
           there the crop is pushed to the bottom (object-position 12%) so the
           head and the ankle callout both survive. next/image serves AVIF/WebP
-          at the size actually needed, not the 2MB source. */}
+          at the size actually needed. The source itself is a 207KB JPEG and
+          lives beside this file rather than in public/, so the full-size
+          original is never reachable as a plain URL the way it was when it
+          sat in public/ as a 2MB PNG. */}
       <div className="relative aspect-[1456/1080] max-h-[62svh] w-full overflow-hidden desk:absolute desk:top-0 desk:right-0 desk:left-auto desk:aspect-auto desk:max-h-none desk:h-svh desk:w-[calc(100svh*1.3481)]">
         <Image
           src={heroImage}
@@ -86,7 +89,7 @@ export default function Home() {
 
           <h1
             className={`rise text-balance font-extrabold leading-[1.06] tracking-[-0.035em] text-ink ${S.h1}`}
-            style={{ animationDelay: "80ms" }}
+            style={{ animationDelay: "40ms" }}
           >
             Finally, a fitness tracker that doesn&rsquo;t rely on{" "}
             <span className="whitespace-nowrap text-accent">arm movement.</span>
@@ -95,14 +98,14 @@ export default function Home() {
           {/* ch caps the measure for reading; the column caps it on a phone. */}
           <p
             className={`rise max-w-[52ch] leading-[1.5] text-ink ${S.lead}`}
-            style={{ animationDelay: "150ms" }}
+            style={{ animationDelay: "75ms" }}
           >
             Most fitness trackers rely on arm movement, so they miss steps when
             your hands aren&rsquo;t swinging.
           </p>
           <p
             className={`rise max-w-[56ch] leading-[1.55] text-ink/85 ${S.body}`}
-            style={{ animationDelay: "190ms" }}
+            style={{ animationDelay: "95ms" }}
           >
             <span className="font-bold text-ink">Strolla</span> is an ankle-worn
             fitness tracker designed to count every step, whether you&rsquo;re
@@ -112,7 +115,7 @@ export default function Home() {
 
           <ul
             className={`rise grid grid-cols-2 gap-x-3 gap-y-3 sm:grid-cols-5 sm:gap-y-4 ${S.block}`}
-            style={{ animationDelay: "240ms" }}
+            style={{ animationDelay: "120ms" }}
           >
             {useCases.map(({ label, Icon }) => (
               <li
@@ -138,7 +141,7 @@ export default function Home() {
               column, which is fluid in both layouts. */}
           <div
             className={`rise @container ${S.block}`}
-            style={{ animationDelay: "320ms" }}
+            style={{ animationDelay: "160ms" }}
           >
             <WaitlistForm />
           </div>

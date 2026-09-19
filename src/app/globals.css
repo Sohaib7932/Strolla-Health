@@ -217,7 +217,7 @@ body {
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -225,12 +225,27 @@ body {
   }
 }
 
+/* will-change is load-bearing, not a superstition: Chrome declines to promote
+   these blocks on its own (they are large, text-heavy, and in normal flow), so
+   without it every frame of the entrance re-ran layout for the whole column.
+   Measured on a 6x-throttled CPU, paired runs against the same build: layout
+   3011ms without it, 2109ms with. It is declared on six one-shot elements, so
+   the standing cost is six compositor layers on a page that has nothing else
+   competing for them.
+
+   The duration and the stagger in page.tsx are deliberately short. Speed Index
+   scores how fast the page LOOKS finished, so a long staggered fade is charged
+   for twice: once in the metric, once by anyone actually waiting for the copy. */
 .rise {
-  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  will-change: opacity, transform;
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rise {
     animation: none;
+    /* No animation means nothing to promote, and a stray will-change would
+       hold a compositor layer (and a containing block) for no reason. */
+    will-change: auto;
   }
 }
