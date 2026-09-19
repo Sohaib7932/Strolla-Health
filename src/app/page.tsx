@@ -1,5 +1,5 @@
 import Image from "next/image";
-import heroImage from "./strolla-bg.jpg";
+import heroImage from "./strolla-bg.webp";
 import {
   CarryingIcon,
   CartIcon,
@@ -44,7 +44,7 @@ export default function Home() {
           bars beside it. Only a wide, short window hits the 62svh ceiling, and
           there the crop is pushed to the bottom (object-position 12%) so the
           head and the ankle callout both survive. next/image serves AVIF/WebP
-          at the size actually needed. The source itself is a 207KB JPEG and
+          at the size actually needed. The source itself is a 142KB WebP and
           lives beside this file rather than in public/, so the full-size
           original is never reachable as a plain URL the way it was when it
           sat in public/ as a 2MB PNG. */}
